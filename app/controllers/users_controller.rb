@@ -6,7 +6,10 @@ class UsersController < ApplicationController
   end
   def show
     authorize @user
-    @pagy, @articles = pagy(@user.articles.kept.order(created_at: :desc), items: 5)
+    @pagy_kept, @articles = pagy(@user.articles.kept.order(created_at: :desc),
+                                 items: 5, page_param: :kept_page)
+    @pagy_discarded, @discarded_articles = pagy(@user.articles.discarded.order(discarded_at: :desc),
+                                                items: 5, page_param: :discarded_page)
   end
   def edit
     authorize @user

@@ -21,5 +21,6 @@
         <%= render 'admin/moderations/comments_table', comments: @results %>
       <% end %>
     </div>
+    <%= render 'shared/pagy_nav', pagy_instance: @pagy %>
   <% end %>
 </div>

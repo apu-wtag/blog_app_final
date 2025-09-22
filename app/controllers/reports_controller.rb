@@ -9,6 +9,7 @@ class ReportsController < ApplicationController
   def create
     @report = @reportable.reports.new(report_params)
     @report.user = current_user
+    authorize @report
 
     if @report.save
       redirect_to reportable_redirect_path, notice: "Thank you! Your report has been submitted for review."

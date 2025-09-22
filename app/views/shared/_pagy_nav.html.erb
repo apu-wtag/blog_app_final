@@ -1,0 +1,14 @@
+<div class="mt-8">
+  <% if pagy_instance.present? && pagy_instance.pages > 1 %>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+
+      <div class="text-sm text-gray-700">
+        <%== pagy_info(pagy_instance) %>
+      </div>
+
+      <div>
+        <%== pagy_nav(pagy_instance) %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -3,7 +3,7 @@ class CommentPolicy < ApplicationPolicy
     user.present?
   end
   def update?
-    user.present? && (user.admin? || user.editor? || record.user == user)
+    user.present? && (user.editor? || record.user == user)
   end
   def edit?
     update?

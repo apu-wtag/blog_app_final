@@ -42,19 +42,35 @@
         <div class="flex items-center">
           <a href="/" class="font-bold text-lg text-indigo-600">Blog app final</a>
         </div>
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-x-4">
           <% if current_user.present? %>
-            <% if current_user.profile_picture.attached? %>
-              <%= image_tag current_user.profile_picture, class: "h-8 w-8 rounded-full" %>
+
+            <%# 1. User Profile Link %>
+            <%= link_to user_path(current_user), class: "flex items-center space-x-3 group" do %>
+              <% if current_user.profile_picture.attached? %>
+                <%= image_tag current_user.profile_picture, class: "h-8 w-8 rounded-full object-cover ring-2 ring-transparent group-hover:ring-indigo-600 transition-all" %>
+              <% else %>
+                <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold ring-2 ring-transparent group-hover:ring-indigo-600 transition-all">
+                  <%= current_user.name.to_s.chr.upcase %>
+                </div>
+              <% end %>
+              <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">
+                <%= current_user.name %>
+              </span>
             <% end %>
-            <span class="text-gray-700">Hello, <%= link_to "#{current_user.name}", user_path(current_user) %></span>
+            <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+
             <% if current_user.admin? %>
-              <%= link_to "Admin Dashborard", admin_root_path,class: "text-red-700 hover:text-indigo-600" %>
+              <%= link_to "Admin", admin_root_path, class: "text-sm font-medium text-red-700 hover:text-indigo-600" %>
+              <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
             <% end %>
-            <%= button_to "Logout", logout_path, method: :delete, class: "text-gray-700 hover:text-indigo-600" %>
+
+            <%= button_to "Logout", logout_path, method: :delete, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+
           <% else %>
-            <%= link_to "Sign Up", sign_up_path, class: "text-gray-700 hover:text-indigo-600" %>
-            <%= link_to "Login", login_path, class: "text-gray-700 hover:text-indigo-600" %>
+            <%# Logged-out links %>
+            <%= link_to "Sign Up", sign_up_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+            <%= link_to "Login", login_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
           <% end %>
         </div>
       </div>

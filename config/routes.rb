@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   # article resources
   resources :articles do
     member do
+      patch :restore
+      patch :hide
       post :toggle_clap
     end
     collection do

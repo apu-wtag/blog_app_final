@@ -30,44 +30,46 @@
 
   <!-- Articles section -->
   <div class="mt-12">
-    <h2 class="text-2xl font-bold mb-6">
-      Articles
-    </h2>
-
+    <h2 class="text-2xl font-bold mb-6">Published Articles</h2>
     <% if @articles.any? %>
       <div class="border-t border-gray-200">
         <% @articles.each do |article| %>
-          <div class="py-5">
+          <div class="border-b border-gray-200 py-5">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold text-gray-800">
-                <%= link_to article.title, article_path(article), class: "hover:text-indigo-600 transition-colors duration-300", data: { turbo_frame: "_top" } %>
+                <%= link_to article.title, article_path(article), class: "hover:text-indigo-600", data: { turbo_frame: "_top" } %>
               </h3>
-              <p class="text-sm text-gray-500 whitespace-nowrap ml-4"><%= article.created_at.strftime("%B %d, %Y") %></p>
+              <p class="text-sm text-gray-500"><%= article.created_at.strftime("%B %d, %Y") %></p>
             </div>
           </div>
-          <div class="border-b border-gray-200"></div>
         <% end %>
       </div>
-    <% else %>
+      <%= render 'shared/pagy_nav', pagy_instance: @pagy_kept %>
+  <% else %>
       <div class="text-center py-10 px-6 bg-gray-50 rounded-lg border">
         <p class="text-gray-600">This user hasn’t published any articles yet.</p>
       </div>
     <% end %>
-  </div>
-  <div class="mt-8">
-    <% if @pagy.present? && @pagy.pages > 1 %>
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-
-        <div class="text-sm text-gray-700">
-          <%== pagy_info(@pagy) %>
-        </div>
-
-        <div>
-          <%# Make sure to use the pagy_tailwind_nav helper for Tailwind styles %>
-          <%== pagy_nav(@pagy) %>
-        </div>
-
+    <% if @discarded_articles.any? && policy(@user).update? %>
+      <h2 class="text-2xl font-bold mt-16 mb-6">Hidden Articles</h2>
+      <div class="border-t border-gray-200">
+        <% @discarded_articles.each do |article| %>
+          <div class="border-b border-gray-200 py-5">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-500 italic"><%= article.title %></h3>
+                <p class="text-sm text-gray-400">Hidden on <%= article.discarded_at.strftime("%B %d, %Y") %></p>
+              </div>
+              <% if policy(article).restore? %>
+                <%= button_to "Restore", restore_article_path(article), method: :patch,
+                              class: "rounded-md px-3 py-1.5 text-xs bg-green-100 hover:bg-green-200 text-green-800 font-medium" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+      <%= render 'shared/pagy_nav', pagy_instance: @pagy_discarded %>
+  <% end %>
+
   </div>
 </div>

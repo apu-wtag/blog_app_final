@@ -5,6 +5,7 @@ class Admin::UsersController < Admin::BaseController
     if params[:query].present?
       @users = @users.where("name ILIKE ? or email ILIKE ? or user_name ILIKE ?", "%#{params[:query]}%", "%#{params[:query]}%", "%#{params[:query]}%")
     end
+    @pagy, @users = pagy(@users, items: 10)
   end
   def destroy
     if @user == current_user

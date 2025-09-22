@@ -38,7 +38,7 @@
                         class: "text-red-500 hover:text-red-700" %>
         <% end %>
 
-        <% if current_user %>
+        <% if policy(Report.new(reportable: comment)).create? %>
           <%= link_to "Report", new_article_comment_report_path(comment.article, comment),
                       data: { turbo_frame: "report_form_Comment_#{comment.id}" },
                       class: "hover:text-red-600" %>

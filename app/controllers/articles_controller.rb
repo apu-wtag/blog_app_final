@@ -1,6 +1,6 @@
 class ArticlesController < ApplicationController
   before_action :require_login, only: %i[ new create edit update destroy ]
-  before_action :set_article, only: %i[ show edit update destroy toggle_clap ]
+  before_action :set_article, only: %i[ show edit update destroy toggle_clap hide restore]
   before_action :authorize_upload, only: %i[ upload_image fetch_image_url upload_file ]
 
   # GET /articles or /articles.json
@@ -83,12 +83,22 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1 or /articles/1.json
   def destroy
     authorize @article
-    @article.discard
+    @article.destroy!
 
     respond_to do |format|
       format.html { redirect_to articles_path, notice: "Article was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
+  end
+  def hide
+    authorize @article, :hide?
+    @article.discard
+    redirect_to root_path, notice: "Article has been hidden."
+  end
+  def restore
+    authorize @article, :restore?
+    @article.undiscard
+    redirect_back fallback_location: root_path, notice: "Article has been restored."
   end
 
   def upload_image
@@ -165,7 +175,12 @@ class ArticlesController < ApplicationController
 
   private
     def set_article
-      @article = Article.kept.friendly.find(params.expect(:id))
+      scope = if action_name.in?(%w[hide restore])
+                Article.all
+              else
+                Article.kept
+              end
+      @article = scope.friendly.find(params.expect(:id))
       # If an old id or a numeric id was used to find the record, then
       # the request path will not match the post_path, and we should do
       # a 301 redirect that uses the current friendly id.
