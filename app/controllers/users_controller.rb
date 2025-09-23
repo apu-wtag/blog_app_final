@@ -10,6 +10,7 @@ class UsersController < ApplicationController
                                  items: 5, page_param: :kept_page)
     @pagy_discarded, @discarded_articles = pagy(@user.articles.discarded.order(discarded_at: :desc),
                                                 items: 5, page_param: :discarded_page)
+
   end
   def edit
     authorize @user

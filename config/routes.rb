@@ -22,8 +22,8 @@ Rails.application.routes.draw do
   # article resources
   resources :articles do
     member do
-      patch :restore
-      patch :hide
+      # patch :restore
+      # patch :hide
       post :toggle_clap
     end
     collection do
@@ -52,8 +52,13 @@ Rails.application.routes.draw do
     end
     resources :articles, only: [ :destroy ] do
       member do
+        get :new_hide
+        patch :hide
         patch :resolve_reports
         patch :dismiss_reports
+        patch :approve_restoration
+        get :new_rejection
+        patch :reject_restoration
       end
     end
     # Comments resources

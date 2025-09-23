@@ -1,0 +1,10 @@
+<h1>Hello, <%= @user.name %></h1>
+<p>
+  An administrator has reviewed your restoration request for the article, "<%= link_to @article.title, article_url(@article) %>", and it was not approved at this time.
+</p>
+<% if @record.rejection_reason.present? %>
+  <p><strong>Reason provided:</strong> <%= @record.rejection_reason %></p>
+<% end %>
+<p>
+  The article will remain hidden. You are welcome to make further edits and submit another review request from your profile page.
+</p>

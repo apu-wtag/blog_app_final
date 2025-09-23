@@ -23,6 +23,7 @@ class User < ApplicationRecord
   has_many :clapped_articles, through: :claps, source: :article
   has_many :comments, dependent: :destroy
   has_many :reports, dependent: :destroy
+  has_many :moderation_actions, class_name: "ModerationRecord", foreign_key: "admin_id", dependent: :nullify
   after_discard do
     articles.find_each(&:discard)
     comments.find_each(&:discard)

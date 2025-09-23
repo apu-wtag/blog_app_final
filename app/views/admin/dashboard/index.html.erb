@@ -33,26 +33,58 @@
 
   <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Moderation Queue</h3>
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Quick Moderation Queue</h3>
+        <%= link_to "View All", admin_moderation_path, class: "text-sm font-medium text-indigo-600 hover:underline" %>
+      </div>
       <div class="flow-root">
-        <% if @pending_reports.any? %>
+        <% if @actionable_items.any? %>
           <ul role="list" class="-my-5 divide-y divide-gray-200">
-            <% @pending_reports.each do |report| %>
+            <% @actionable_items.each do |item| %>
               <li class="py-4">
                 <div class="flex items-center space-x-4">
                   <div class="flex-1 min-w-0">
+
+                    <%# --- Logic to determine item type and status --- %>
+                    <% is_article = item.is_a?(Article) %>
+                    <% is_review_request = is_article && item.moderation_records.any?(&:pending_review?) %>
+
+                    <%# --- Display Title and Link --- %>
                     <p class="text-sm font-medium text-gray-900 truncate">
-                      <% if report.reportable.is_a?(Article) %>
-                        Article: <%= link_to report.reportable.title, article_path(report.reportable), class: "text-blue-600 hover:underline" %>
+                      <% if is_article %>
+                        Article: <%= link_to item.title, admin_moderation_path(scope: 'articles'), class: "text-blue-600 hover:underline" %>
                       <% else %>
-                        Comment on: <%= link_to report.reportable.article.title, article_path(report.reportable.article), class: "text-blue-600 hover:underline" %>
+                        Comment on: <%= link_to item.article.title, admin_moderation_path(scope: 'comments'), class: "text-blue-600 hover:underline" %>
                       <% end %>
                     </p>
-                    <p class="text-sm text-gray-500 truncate italic">"<%= report.reason %>"</p>
-                    <p class="text-xs text-gray-400">Reported by <%= report.user.name %> <%= time_ago_in_words(report.created_at) %> ago</p>
+
+                    <%# --- Display Reason/Note --- %>
+                    <p class="text-sm text-gray-500 truncate italic">
+                      <% if is_review_request %>
+                        Author's Note: "<%= item.moderation_records.pending_review.last.author_note %>"
+                      <% else %>
+                        "<%= truncate(item.reports.pending.last.reason, length: 70) %>"
+                      <% end %>
+                    </p>
+
+                    <%# --- Display Actor and Timestamp --- %>
+                    <p class="text-xs text-gray-400">
+                      <% if is_review_request %>
+                        Requested by <%= item.user.name %>
+                      <% else %>
+                        Reported by <%= item.reports.pending.last.user.name %>
+                      <% end %>
+                      <%= time_ago_in_words(item.updated_at) %> ago
+                    </p>
                   </div>
+
+                  <%# --- Display Status Badge --- %>
                   <div>
-                    <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded">PENDING</span>
+                    <% if is_review_request %>
+                      <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Awaiting Review</span>
+                    <% else %>
+                      <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-700/10">Reported</span>
+                    <% end %>
                   </div>
                 </div>
               </li>
@@ -63,7 +95,6 @@
         <% end %>
       </div>
     </div>
-
     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
       <h3 class="text-lg font-medium text-gray-900 mb-4">Spotlight Articles</h3>
       <div class="space-y-4">

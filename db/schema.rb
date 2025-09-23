@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_18_062234) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_22_095309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_062234) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "moderation_records", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.bigint "admin_id", null: false
+    t.text "admin_reason"
+    t.text "author_note"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "rejection_reason"
+    t.index ["admin_id"], name: "index_moderation_records_on_admin_id"
+    t.index ["article_id"], name: "index_moderation_records_on_article_id"
+    t.index ["status"], name: "index_moderation_records_on_status"
+  end
+
   create_table "reports", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "reason"
@@ -159,5 +173,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_062234) do
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "comments", column: "parent_id"
   add_foreign_key "comments", "users"
+  add_foreign_key "moderation_records", "articles"
+  add_foreign_key "moderation_records", "users", column: "admin_id"
   add_foreign_key "reports", "users"
 end

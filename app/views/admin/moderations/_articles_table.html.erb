@@ -3,6 +3,7 @@
     <div class="overflow-visible shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
       <table class="min-w-full divide-y divide-gray-300">
         <thead class="bg-gray-50">
+        <!-- Headers row -->
         <tr>
           <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
             Reported Article & Details
@@ -10,51 +11,51 @@
           <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right">Actions</th>
         </tr>
         </thead>
+        <!-- Loading each article according to their type i.e. review/reported  -->
+
         <tbody class="divide-y divide-gray-200 bg-white">
         <% articles.each do |article| %>
-          <tr>
+          <% is_review_request = article.moderation_records.any?(&:pending_review?) %>
+
+          <tr id="<%= dom_id(article) %>">
             <td class="py-4 pl-4 pr-3 text-sm sm:pl-6">
               <p class="font-medium text-gray-900"><%= article.title %></p>
-              <p class="text-xs text-gray-500 mt-2">
-                By <%= article.user.name %>
-              </p>
+              <p class="text-xs text-gray-500 mt-1">By <%= article.user.name %></p>
               <div class="mt-2 space-y-1">
-                <% article.reports.pending.each do |report| %>
-                  <p class="text-xs text-gray-500 italic">
-                    "<%= report.reason %>" - <span class="font-semibold"><%= report.user.name %></span>
-                  </p>
+                <% if is_review_request %>
+                  <p class="text-xs text-gray-500 italic">Author's Note: "<%= article.moderation_records.pending_review.last.author_note %>"</p>
+                <% else %>
+                  <% article.reports.pending.each do |report| %>
+                    <p class="text-xs text-gray-500 italic">Reported for: "<%= report.reason %>" - by <%= report.user.name %></p>
+                  <% end %>
                 <% end %>
               </div>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <% if is_review_request %>
+                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Awaiting Review</span>
+              <% else %>
+                <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-700/10">Reported</span>
+              <% end %>
             </td>
             <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 align-top">
               <div class="flex items-center justify-end gap-x-4">
                 <%= link_to "Show", article_path(article), target: "_blank", class: "text-indigo-600 hover:text-indigo-900" %>
-
-                <div data-controller="dropdown" data-action="click@window->dropdown#hide" class="relative inline-block text-left">
-                  <button data-action="dropdown#toggle" type="button"
-                          class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    Actions
-                    <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd"
-                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clip-rule="evenodd" />
-                    </svg>
-                  </button>
-
-                  <div data-dropdown-target="menu"
-                       class="hidden absolute right-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none mt-2">
-                    <div class="py-1">
-                      <%= button_to "Mark as Resolved", resolve_reports_admin_article_path(article), method: :patch,
-                                    class: "text-gray-700 block w-full px-4 py-2 text-left text-sm hover:bg-gray-100" %>
-                      <%= button_to "Mark as Dismissed", dismiss_reports_admin_article_path(article), method: :patch,
-                                    class: "text-gray-700 block w-full px-4 py-2 text-left text-sm hover:bg-gray-100" %>
+                <% if is_review_request %>
+                  <%= link_to "Reject", new_rejection_admin_article_path(article), data: { turbo_frame: "_top", turbo_stream: true }, class: "text-sm font-medium text-red-600 hover:text-red-900" %>
+                  <%= button_to "Approve", approve_restoration_admin_article_path(article), method: :patch, class: "text-sm font-medium text-green-600 hover:text-green-900", data: { turbo_frame: "_top", turbo_stream: true} %>
+                <% else %>
+                  <div data-controller="dropdown" data-action="click@window->dropdown#hide" class="relative inline-block text-left">
+                    <button data-dropdown-target="button" data-action="dropdown#toggle" type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Actions</button>
+                    <div data-dropdown-target="menu" class="hidden fixed z-10 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                      <div class="py-1">
+                        <%= button_to "Resolve Reports", resolve_reports_admin_article_path(article), method: :patch, class: "text-gray-700 block w-full px-4 py-2 text-left text-sm hover:bg-gray-100" %>
+                        <%= button_to "Dismiss Reports", dismiss_reports_admin_article_path(article), method: :patch, class: "text-gray-700 block w-full px-4 py-2 text-left text-sm hover:bg-gray-100" %>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <%= link_to "Delete", admin_article_path(article),
-                            data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-                            class: "text-red-600 hover:text-red-900" %>
+                  <%= link_to "Hide", new_hide_admin_article_path(article), class: "text-red-600 hover:text-red-900", data: { turbo_frame: "_top", turbo_stream: true} %>
+                <% end %>
               </div>
             </td>
           </tr>

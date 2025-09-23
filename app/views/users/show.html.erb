@@ -50,20 +50,39 @@
         <p class="text-gray-600">This user hasn’t published any articles yet.</p>
       </div>
     <% end %>
+<!--  Section for Hidden/Discarded Articles -->
     <% if @discarded_articles.any? && policy(@user).update? %>
       <h2 class="text-2xl font-bold mt-16 mb-6">Hidden Articles</h2>
       <div class="border-t border-gray-200">
         <% @discarded_articles.each do |article| %>
+          <%# Find the latest moderation record for this article %>
+          <% record = article.moderation_records.last %>
           <div class="border-b border-gray-200 py-5">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-start">
               <div>
-                <h3 class="text-lg font-semibold text-gray-500 italic"><%= article.title %></h3>
+                <div class="flex items-center gap-x-3">
+                  <h3 class="text-lg font-semibold text-gray-500 italic"><%= article.title %></h3>
+                  <% if record&.pending_review? %>
+                    <span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Pending Review</span>
+                  <% elsif record&.rejected? %>
+                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-700/10">Rejected</span>
+                  <% end %>
+                </div>
                 <p class="text-sm text-gray-400">Hidden on <%= article.discarded_at.strftime("%B %d, %Y") %></p>
+                <% if record %>
+                  <% reason = record.rejected? ? record.rejection_reason : record.admin_reason %>
+                  <% if reason.present? %>
+                    <p class="text-sm text-red-600 mt-2">
+                      Admin Reason: <%= reason %>
+                    </p>
+                  <% end %>
+                <% end %>
               </div>
-              <% if policy(article).restore? %>
-                <%= button_to "Restore", restore_article_path(article), method: :patch,
-                              class: "rounded-md px-3 py-1.5 text-xs bg-green-100 hover:bg-green-200 text-green-800 font-medium" %>
-              <% end %>
+              <div class="flex items-center gap-x-4 flex-shrink-0 ml-4">
+                <% if policy(article).update? %>
+                  <%= link_to "Edit to Request Review", edit_article_path(article), class: "rounded-md px-3 py-1.5 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-medium" %>
+                <% end %>
+              </div>
             </div>
           </div>
         <% end %>

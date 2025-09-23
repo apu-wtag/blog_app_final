@@ -15,6 +15,15 @@
       </ul>
     </div>
   <% end %>
+<!--  Article Hidden details-->
+  <% if article.discarded? %>
+    <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
+      <h3 class="font-semibold text-yellow-800">This article is currently hidden.</h3>
+      <p class="text-sm text-yellow-700 mt-1">
+        After saving your changes, this article will be submitted to an administrator for review before it can be restored.
+      </p>
+    </div>
+  <% end %>
 
   <!-- Title -->
   <div class="pb-6 border-b border-gray-200">
@@ -59,10 +68,19 @@
          class="prose lg:prose-xl max-w-none min-h-[400px] text-gray-800 focus:outline-none">
     </div>
   </div>
+<!--  Note to admin from author -->
+  <% if article.discarded? %>
+    <div class="pb-6 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-800 mb-2">Note to Admin (Optional)</h3>
+      <p class="text-sm text-gray-500 mb-4">Explain the changes you've made to help the admin review your article.</p>
+      <%= form.text_area :author_note, rows: 3, class: "block w-full rounded-md border-gray-300 shadow-sm", placeholder: "e.g., I've removed the problematic section and clarified my sources." %>
+    </div>
+  <% end %>
 
   <!-- Actions -->
   <div class="flex items-center gap-4 pt-4">
-    <%= form.submit "Publish",
+    <% submit_text = article.discarded? ? "Update & Request Review" : "Publish" %>
+    <%= form.submit submit_text,
                     class: "px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition" %>
 
     <% if article.persisted? %>

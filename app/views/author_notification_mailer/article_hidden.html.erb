@@ -1,0 +1,10 @@
+<h1>Hello, <%= @user.name %></h1>
+<p>
+  Your article, "<%= link_to @article.title, article_url(@article) %>", has been hidden by an administrator.
+</p>
+<% if @record.admin_reason.present? %>
+  <p><strong>Reason provided:</strong> <%= @record.admin_reason %></p>
+<% end %>
+<p>
+  The article is no longer visible to the public, but you can still view and edit it from your profile page. If you make changes to address the issue, you can request a new review.
+</p>

@@ -1,4 +1,15 @@
 <div id="<%= dom_id article %>" class="space-y-5">
+  <!--  Article Hidden details-->
+  <% if article.discarded? %>
+    <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
+      <h3 class="font-semibold text-yellow-800">This article is currently hidden.</h3>
+      <% if policy(article).update? %>
+        <p class="text-sm text-yellow-700 mt-1">
+          After saving your changes, this article will be submitted to an administrator for review before it can be restored.
+        </p>
+      <% end %>
+    </div>
+  <% end %>
   <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
   <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-gray-900 mb-6">
     <%= article.title %>

@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   extend FriendlyId
   friendly_id :title, use: [:slugged, :history]
   attr_writer :topic_name
+  attr_accessor :author_note
 
   validates :topic, presence: true
   validates :title, presence: true
@@ -16,6 +17,7 @@ class Article < ApplicationRecord
   has_many :clapped_users, through: :claps, source: :user
   has_many :comments, dependent: :destroy
   has_many :reports, as: :reportable, dependent: :destroy
+  has_many :moderation_records, dependent: :destroy
   belongs_to :topic
   belongs_to :user
 

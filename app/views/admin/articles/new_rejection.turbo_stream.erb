@@ -1,0 +1,3 @@
+<%= turbo_stream.replace(@article) do %>
+  <%= render "admin/moderations/reject_form_row", article: @article %>
+<% end %>

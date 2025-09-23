@@ -1,6 +1,6 @@
 class ArticlePolicy < ApplicationPolicy
   def show?
-    true
+    record.kept? || (user.present? && (user.admin? || record.user == user))
   end
   def create?
     user.present?
@@ -22,7 +22,12 @@ class ArticlePolicy < ApplicationPolicy
   end
   class Scope < Scope
     def resolve
-      scope.all
+      if user&.admin?
+        scope.with_discarded
+      else
+        scope.kept
+      end
+
     end
   end
 end

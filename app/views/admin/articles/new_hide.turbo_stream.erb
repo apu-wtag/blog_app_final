@@ -1,0 +1,3 @@
+<%= turbo_stream.replace(@article) do %>
+  <%= render "admin/moderations/hide_article_row", article: @article %>
+<% end %>

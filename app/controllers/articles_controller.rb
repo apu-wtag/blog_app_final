@@ -1,14 +1,14 @@
 class ArticlesController < ApplicationController
   before_action :require_login, only: %i[ new create edit update destroy ]
-  before_action :set_article, only: %i[ show edit update destroy toggle_clap hide restore]
+  before_action :set_article, only: %i[ show edit update destroy toggle_clap ]
   before_action :authorize_upload, only: %i[ upload_image fetch_image_url upload_file ]
 
   # GET /articles or /articles.json
   def index
     @query = params[:query]
-    @scope = params[:scope] || 'articles'
+    @scope = params[:scope] || "articles"
 
-    if @scope == 'articles'
+    if @scope == "articles"
       articles = policy_scope(Article).kept
       articles = articles.includes(user: { profile_picture_attachment: :blob })
       if @query.present?
@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
         )
       end
       @pagy, @results = pagy(articles.order(created_at: :desc), items: 10)
-    elsif @scope == 'people'
+    elsif @scope == "people"
       users = policy_scope(User) rescue User.kept
       users = users.includes(profile_picture_attachment: :blob)
       if @query.present?
@@ -69,10 +69,18 @@ class ArticlesController < ApplicationController
   # PATCH/PUT /articles/1 or /articles/1.json
   def update
     authorize @article
+    note = article_params.delete(:author_note)
     respond_to do |format|
       if @article.update(article_params)
-        format.html { redirect_to @article, notice: "Article was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @article }
+        if @article.discarded? && @article.user == current_user
+          record = @article.moderation_records.last || @article.moderation_records.build
+          record.update(author_note: note, status: :pending_review)
+          format.html { redirect_to @article, notice: "Article updated and submitted for review.", status: :see_other }
+          format.json { render :show, status: :ok, location: @article }
+        else
+          format.html { redirect_to @article, notice: "Article was successfully updated.", status: :see_other }
+          format.json { render :show, status: :ok, location: @article }
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @article.errors, status: :unprocessable_entity }
@@ -90,17 +98,6 @@ class ArticlesController < ApplicationController
       format.json { head :no_content }
     end
   end
-  def hide
-    authorize @article, :hide?
-    @article.discard
-    redirect_to root_path, notice: "Article has been hidden."
-  end
-  def restore
-    authorize @article, :restore?
-    @article.undiscard
-    redirect_back fallback_location: root_path, notice: "Article has been restored."
-  end
-
   def upload_image
     # Rails.logger.info "---- DEBUG: RUNNING NEW UPLOAD_IMAGE METHOD ----"
     file = params[:file]
@@ -132,11 +129,11 @@ class ArticlesController < ApplicationController
         success: 1,
         file: {
           url: url_for(blob),
-          signed_id: blob.signed_id # <-- ADDED
+          signed_id: blob.signed_id 
         }
       }
     else
-      render json: { success: 0, message: 'No URL provided' }, status: :unprocessable_entity
+      render json: { success: 0, message: "No URL provided" }, status: :unprocessable_entity
     end
   rescue => e
     render json: { success: 0, message: e.message }, status: :unprocessable_entity
@@ -152,7 +149,7 @@ class ArticlesController < ApplicationController
         success: 1,
         file: {
           url: url_for(blob),
-          signed_id: blob.signed_id, # <-- ADDED
+          signed_id: blob.signed_id,
           size: blob.byte_size,
           name: blob.filename.to_s,
           title: blob.filename.to_s,
@@ -160,7 +157,7 @@ class ArticlesController < ApplicationController
         }
       }
     else
-      render json: { success: 0, message: 'No file provided' }, status: :unprocessable_entity
+      render json: { success: 0, message: "No file provided" }, status: :unprocessable_entity
     end
   end
   def toggle_clap
@@ -175,12 +172,7 @@ class ArticlesController < ApplicationController
 
   private
     def set_article
-      scope = if action_name.in?(%w[hide restore])
-                Article.all
-              else
-                Article.kept
-              end
-      @article = scope.friendly.find(params.expect(:id))
+      @article = Article.all.friendly.find(params.expect(:id))
       # If an old id or a numeric id was used to find the record, then
       # the request path will not match the post_path, and we should do
       # a 301 redirect that uses the current friendly id.
@@ -197,6 +189,6 @@ class ArticlesController < ApplicationController
       end
     end
     def article_params
-      params.expect(article: [ :title, :content,:topic_name ])
+      params.expect(article: [ :title, :content, :topic_name, :author_note ])
     end
 end
