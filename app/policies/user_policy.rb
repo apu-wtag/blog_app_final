@@ -6,6 +6,6 @@ class UserPolicy < ApplicationPolicy
     user.present? && (record == user || user.admin?)
   end
   def destroy?
-    user.admin?
+    user.present? && user.admin?
   end
 end

@@ -1,27 +1,29 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe ReportPolicy, type: :policy do
-  let(:user) { User.new }
+  let(:guest) { nil }
+  let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
+
+  let(:article_by_other_user) { create(:article, user: other_user) }
+  let(:article_by_user) { create(:article, user: user) }
+
+  let(:report_on_others_content) { Report.new(reportable: article_by_other_user) }
+  let(:report_on_own_content) { Report.new(reportable: article_by_user) }
 
   subject { described_class }
 
-  permissions ".scope" do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :show? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
   permissions :create? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
+    it "forbids guests from creating a report" do
+      expect(subject).not_to permit(guest, report_on_others_content)
+    end
 
-  permissions :update? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
+    it "permits a user to report another user's content" do
+      expect(subject).to permit(user, report_on_others_content)
+    end
 
-  permissions :destroy? do
-    pending "add some examples to (or delete) #{__FILE__}"
+    it "forbids a user from reporting their own content" do
+      expect(subject).not_to permit(user, report_on_own_content)
+    end
   end
 end
