@@ -7,7 +7,7 @@ export default class extends Controller {
   connect() {
     this.handler = this.debounced(() => {
       this.element.requestSubmit()
-    }, 800) // Increased to 800ms for more typing time
+    }, 300) // Increased to 800ms for more typing time
 
     this.queryTarget.addEventListener("input", this.handler)
     // Listen for Turbo frame load to restore focus

@@ -1,5 +1,9 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+require 'pundit/rspec'
+require 'rspec/sidekiq/sidekiq'
+require_relative 'support/controller_helpers'
+require_relative 'support/html_helpers'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -53,6 +57,8 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
   config.include FactoryBot::Syntax::Methods
+  config.include ControllerHelpers, type: :request
+  config.include HtmlHelpers, type: :request
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
@@ -78,4 +84,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
 end
+RSpec::Sidekiq.configure do |config|
+  config.warn_when_jobs_not_processed_by_sidekiq = false
+end
+Sidekiq::Testing.fake!

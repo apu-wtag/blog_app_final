@@ -254,6 +254,10 @@ GEM
       activesupport (= 8.0.2.1)
       bundler (>= 1.15.0)
       railties (= 8.0.2.1)
+    rails-controller-testing (1.0.5)
+      actionpack (>= 5.0.1.rc1)
+      actionview (>= 5.0.1.rc1)
+      activesupport (>= 5.0.1.rc1)
     rails-dom-testing (2.3.0)
       activesupport (>= 5.0.0)
       minitest
@@ -295,6 +299,11 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
+    rspec-sidekiq (5.2.0)
+      rspec-core (~> 3.0)
+      rspec-expectations (~> 3.0)
+      rspec-mocks (~> 3.0)
+      sidekiq (>= 5, < 9)
     rspec-support (3.13.5)
     rubocop (1.80.2)
       json (~> 2.3)
@@ -431,7 +440,9 @@ DEPENDENCIES
   puma (>= 5.0)
   pundit (~> 2.5)
   rails (~> 8.0.2, >= 8.0.2.1)
+  rails-controller-testing
   rspec-rails
+  rspec-sidekiq
   rubocop-rails-omakase
   shoulda-matchers
   sidekiq (~> 8.0)

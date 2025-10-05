@@ -63,6 +63,10 @@ group :development, :test do
   gem "faker"
   gem "shoulda-matchers"
   gem "letter_opener"
+  gem "rails-controller-testing"
+end
+group :test do
+  gem "rspec-sidekiq"
 end
 gem "sidekiq", "~> 8.0"
 gem "friendly_id", "~> 5.5"
