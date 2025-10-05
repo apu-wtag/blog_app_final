@@ -12,6 +12,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require 'rspec/rails'
+require 'capybara/rspec'
 require 'shoulda/matchers'
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
@@ -86,6 +87,9 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.before(:each) do
     Sidekiq::Worker.clear_all
+  end
+  config.before(:each, type: :system) do
+    driven_by :selenium_chrome_headless
   end
 end
 RSpec::Sidekiq.configure do |config|

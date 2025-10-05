@@ -64,6 +64,8 @@ group :development, :test do
   gem "shoulda-matchers"
   gem "letter_opener"
   gem "rails-controller-testing"
+  gem "capybara"
+  gem "selenium-webdriver"
 end
 group :test do
   gem "rspec-sidekiq"
