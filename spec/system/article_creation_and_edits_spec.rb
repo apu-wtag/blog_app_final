@@ -33,7 +33,7 @@ RSpec.describe "ArticleCreation", type: :system do
 
     fill_in "Title", with: "My Edited Multi-Block Article"
     first_paragraph = find_all(".ce-paragraph").first
-    first_paragraph.send_keys([ :command, 'a' ], :backspace)
+    first_paragraph.send_keys([ :control, 'a' ], :backspace)
     first_paragraph.send_keys("This content has been completely replaced.")
     click_button "Publish"
 
