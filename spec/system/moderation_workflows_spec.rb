@@ -7,8 +7,7 @@ RSpec.describe "ModerationWorkflow", type: :system do
   let!(:article) { create(:article, user: author, title: "An Article to be Moderated") }
 
   before do
-    driven_by(:selenium_chrome_headless)
-    page.driver.browser.manage.window.resize_to(1920,1080)
+    driven_by(:selenium_chrome)
   end
 
   def login_as(user)
@@ -37,15 +36,25 @@ RSpec.describe "ModerationWorkflow", type: :system do
     # An Admin Hides the Article
     login_as(admin)
     visit admin_moderation_path
+    puts "Visiting admin moderation page"
+    sleep 2
 
-    within("#article_#{article.id}") do
-      expect(page).to have_content("Reported")
-      click_link "Hide"
-    end
-    within("#article_#{article.id}") do
-      fill_in "article_admin_reason", with: "Admin has hidden this for review."
-      click_button "Confirm Hide"
-    end
+    puts "Found article row: #{article.title}"
+    sleep 2
+    article_row = find("#article_#{article.id}")
+    expect(article_row).to have_content("Reported")
+    puts "Clicking 'Hide' link for article: #{article.title}"
+    article_row.click_link "Hide", wait: 5
+    puts "done clicking 'Hide' link for article: #{article.title}"
+    sleep 3
+    puts "Waiting for Turbo frame to load form..."
+    expect(page).to have_field("article_admin_reason", wait: 10 )
+    article_row = find("#article_#{article.id}")
+    expect(article_row).to have_field("article_admin_reason")
+    puts "Form loaded successfully"
+    sleep 3
+    article_row.fill_in "article_admin_reason", with: "Admin has hidden this for review."
+    article_row.click_button "Confirm Hide"
 
     expect(page).to have_content("Article has been hidden.")
     visit root_path

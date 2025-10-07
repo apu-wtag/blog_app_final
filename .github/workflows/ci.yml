@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ main ]
+#    branches: [ main ]
 
 jobs:
   scan_ruby:
@@ -53,3 +53,78 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
+  rspec:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        ports: [ '5432:5432' ]
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: myapp_test
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/myapp_test"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Install system dependencies
+        run: |
+          # Install Chrome dependencies and Xvfb
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 fonts-liberation xvfb
+          
+          # Add Google's signing key and repo for Chrome
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          
+          # Install Google Chrome stable
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          
+          # Verify Chrome installation
+          google-chrome --version
+
+      - name: Install Ruby dependencies
+        run: |
+          bundle install --jobs 4 --retry 3
+
+      - name: Prepare database
+        run: |
+          bin/rails db:create db:schema:load --trace
+
+      - name: Run RSpec system tests with Xvfb
+        run: |
+          # Start Xvfb for non-headless Chrome
+          Xvfb :99 -screen 0 1920x1080x24 &
+          export DISPLAY=:99
+          bundle exec rspec spec/system
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: tmp/capybara
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: log/test.log
