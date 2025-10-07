@@ -87,19 +87,18 @@ jobs:
         run: |
           # Install Chrome dependencies and Xvfb
           sudo apt-get update
-          sudo apt-get install -y wget gnupg libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 fonts-liberation xvfb
-          
+          sudo apt-get install -y wget gnupg libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2t64 fonts-liberation xvfb
+      
           # Add Google's signing key and repo for Chrome
           wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          
+      
           # Install Google Chrome stable
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          
+      
           # Verify Chrome installation
           google-chrome --version
-
       - name: Install Ruby dependencies
         run: |
           bundle install --jobs 4 --retry 3
