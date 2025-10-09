@@ -110,6 +110,9 @@ GEM
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
     dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
     erb (5.0.2)
@@ -168,6 +171,11 @@ GEM
       logger (~> 1.6)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
+    letter_opener_web (3.0.0)
+      actionmailer (>= 6.1)
+      letter_opener (~> 1.9)
+      railties (>= 6.1)
+      rexml
     lint_roller (1.1.0)
     logger (1.7.0)
     loofah (2.24.1)
@@ -449,6 +457,7 @@ DEPENDENCIES
   chartkick (~> 5.2)
   debug
   discard (~> 1.4)
+  dotenv-rails
   factory_bot_rails
   faker
   friendly_id (~> 5.5)
@@ -458,6 +467,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
+  letter_opener_web
   pagy (~> 9.4)
   pg (~> 1.1)
   propshaft

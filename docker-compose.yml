@@ -1,0 +1,93 @@
+version: '3.8'
+
+networks:
+  app_network:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:14
+    networks:
+      - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"  # Optional: expose for local tools
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - app_network
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6379:6379"  # Optional
+    restart: always
+
+  web:
+    build: .
+    command: bash -c "bundle exec rails s -p 3000 -b '0.0.0.0'"
+    networks:
+      - app_network
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/blog_app_final_development
+      DATABASE_USERNAME: postgres  # Matches POSTGRES_USER if set; with trust, no password needed
+      DATABASE_NAME: blog_app_final  # Adjust if your app name differs
+      RAILS_MAX_THREADS: 5
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    tty: true
+
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    networks:
+      - app_network
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+      DATABASE_USERNAME: postgres
+      DATABASE_NAME: blog_app_final
+      RAILS_MAX_THREADS: 5
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  postgres_data:
+  redis_data:
+  bundle_cache:

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   # sidekiq
   mount Sidekiq::Web => '/sidekiq'
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   # signup routes
   get "sign_up",to: "users#new"
   post "sign_up", to: "users#create"

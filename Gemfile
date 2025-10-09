@@ -63,9 +63,11 @@ group :development, :test do
   gem "faker"
   gem "shoulda-matchers"
   gem "letter_opener"
+  gem "letter_opener_web"
   gem "rails-controller-testing"
   gem "capybara"
   gem "selenium-webdriver"
+  gem "dotenv-rails"
 end
 group :test do
   gem "rspec-sidekiq"
