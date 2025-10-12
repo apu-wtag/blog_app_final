@@ -1,6 +1,5 @@
 <div class="max-w-3xl mx-auto mt-16 px-4">
 
-  <!-- Profile header -->
   <div class="flex items-center space-x-6">
     <% if @user.profile_picture.attached? %>
       <%= image_tag @user.profile_picture, class: "w-32 h-32 rounded-full object-cover shadow-md" %>
@@ -15,22 +14,20 @@
       <p class="text-gray-600 text-lg mt-1">@<%= @user.user_name %></p>
       <% if policy(@user).update? %>
         <div class="mt-4">
-          <%= link_to "Edit Profile", edit_user_path(@user), class: "px-4 py-2 bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 text-sm font-medium" %>
+          <%= link_to t('users_show.edit_profile_button'), edit_user_path(@user), class: "px-4 py-2 bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 text-sm font-medium" %>
         </div>
       <% end %>
     </div>
   </div>
 
-  <!-- Bio section -->
   <% if @user.bio.present? %>
     <div class="mt-10 prose prose-lg">
       <p><%= @user.bio %></p>
     </div>
   <% end %>
 
-  <!-- Articles section -->
   <div class="mt-12">
-    <h2 class="text-2xl font-bold mb-6">Published Articles</h2>
+    <h2 class="text-2xl font-bold mb-6"><%= t('users_show.published_articles_title') %></h2>
     <% if @articles.any? %>
       <div class="border-t border-gray-200">
         <% @articles.each do |article| %>
@@ -45,14 +42,13 @@
         <% end %>
       </div>
       <%= render 'shared/pagy_nav', pagy_instance: @pagy_kept %>
-  <% else %>
+    <% else %>
       <div class="text-center py-10 px-6 bg-gray-50 rounded-lg border">
-        <p class="text-gray-600">This user hasn’t published any articles yet.</p>
+        <p class="text-gray-600"><%= t('users_show.no_articles_message') %></p>
       </div>
     <% end %>
-<!--  Section for Hidden/Discarded Articles -->
     <% if @discarded_articles.any? && policy(@user).update? %>
-      <h2 class="text-2xl font-bold mt-16 mb-6">Hidden Articles</h2>
+      <h2 class="text-2xl font-bold mt-16 mb-6"><%= t('users_show.hidden_articles_title') %></h2>
       <div class="border-t border-gray-200">
         <% @discarded_articles.each do |article| %>
           <%# Find the latest moderation record for this article %>
@@ -63,24 +59,24 @@
                 <div class="flex items-center gap-x-3">
                   <h3 class="text-lg font-semibold text-gray-500 italic"><%= article.title %></h3>
                   <% if record&.pending_review? %>
-                    <span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Pending Review</span>
+                    <span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20"><%= t('users_show.status_pending_review') %></span>
                   <% elsif record&.rejected? %>
-                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-700/10">Rejected</span>
+                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-700/10"><%= t('users_show.status_rejected') %></span>
                   <% end %>
                 </div>
-                <p class="text-sm text-gray-400">Hidden on <%= article.discarded_at.strftime("%B %d, %Y") %></p>
+                <p class="text-sm text-gray-400"><%= t('users_show.hidden_on_date', date: article.discarded_at.strftime("%B %d, %Y")) %></p>
                 <% if record %>
                   <% reason = record.rejected? ? record.rejection_reason : record.admin_reason %>
                   <% if reason.present? %>
                     <p class="text-sm text-red-600 mt-2">
-                      Admin Reason: <%= reason %>
+                      <%= t('users_show.admin_reason', reason: reason) %>
                     </p>
                   <% end %>
                 <% end %>
               </div>
               <div class="flex items-center gap-x-4 flex-shrink-0 ml-4">
                 <% if policy(article).update? %>
-                  <%= link_to "Edit to Request Review", edit_article_path(article), class: "rounded-md px-3 py-1.5 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-medium" %>
+                  <%= link_to t('users_show.edit_for_review_button'), edit_article_path(article), class: "rounded-md px-3 py-1.5 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-medium" %>
                 <% end %>
               </div>
             </div>
@@ -88,7 +84,7 @@
         <% end %>
       </div>
       <%= render 'shared/pagy_nav', pagy_instance: @pagy_discarded %>
-  <% end %>
+    <% end %>
 
   </div>
 </div>

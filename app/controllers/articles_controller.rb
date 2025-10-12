@@ -129,7 +129,7 @@ class ArticlesController < ApplicationController
         success: 1,
         file: {
           url: url_for(blob),
-          signed_id: blob.signed_id 
+          signed_id: blob.signed_id
         }
       }
     else
@@ -171,24 +171,24 @@ class ArticlesController < ApplicationController
   end
 
   private
-    def set_article
-      @article = Article.not_archived.friendly.find(params.expect(:id))
-      # If an old id or a numeric id was used to find the record, then
-      # the request path will not match the post_path, and we should do
-      # a 301 redirect that uses the current friendly id.
-      if action_name == "show" && request.path != article_path(@article)
-        redirect_to @article, status: :moved_permanently
-      end
+  def set_article
+    @article = Article.not_archived.friendly.find(params.expect(:id))
+    # If an old id or a numeric id was used to find the record, then
+    # the request path will not match the post_path, and we should do
+    # a 301 redirect that uses the current friendly id.
+    if params[:id] != @article.to_param
+      redirect_to @article, status: :moved_permanently
     end
-    def authorize_upload
-      if params[:article_id].present?
-        article = Article.friendly.find(params[:article_id])
-        authorize article, :update?
-      else
-        authorize Article, :create?
-      end
+  end
+  def authorize_upload
+    if params[:article_id].present?
+      article = Article.friendly.find(params[:article_id])
+      authorize article, :update?
+    else
+      authorize Article, :create?
     end
-    def article_params
-      params.expect(article: [ :title, :content, :topic_name, :author_note ])
-    end
+  end
+  def article_params
+    params.expect(article: [ :title, :content, :topic_name, :author_note ])
+  end
 end

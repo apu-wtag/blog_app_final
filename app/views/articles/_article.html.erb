@@ -1,11 +1,10 @@
 <div id="<%= dom_id article %>" class="space-y-5">
-  <!--  Article Hidden details-->
   <% if article.discarded? %>
     <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
-      <h3 class="font-semibold text-yellow-800">This article is currently hidden.</h3>
+      <h3 class="font-semibold text-yellow-800"><%= t('article_partial.hidden_notice_title') %></h3>
       <% if policy(article).update? %>
         <p class="text-sm text-yellow-700 mt-1">
-          After saving your changes, this article will be submitted to an administrator for review before it can be restored.
+          <%= t('article_partial.hidden_notice_body') %>
         </p>
       <% end %>
     </div>
@@ -14,7 +13,6 @@
   <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-gray-900 mb-6">
     <%= article.title %>
   </h1>
-  <!-- Author & Date -->
   <%= link_to user_path(article.user), class: "flex items-center space-x-3 mb-10 group hover:bg-gray-50 rounded-md p-1" do %>
     <% if article.user.profile_picture.attached? %>
       <%= image_tag article.user.profile_picture, class: "h-10 w-10 rounded-full object-cover" %>
@@ -33,15 +31,14 @@
       </p>
     </div>
   <% end %>
-  <!--Topic-->
   <div class="flex items-center space-x-2">
-    <span class="text-base font-medium text-gray-800">Topic name :</span>
+    <span class="text-base font-medium text-gray-800"><%= t('article_partial.topic_label') %></span>
     <%= link_to "##{article.topic.slug}",
                 topic_path(article.topic),
                 class: "inline-block bg-gray-100 hover:bg-gray-200 transition-colors rounded-full px-3 py-1 text-sm font-semibold text-gray-700" %>
   </div>
   <div>
-  <%= render "articles/clap_button", article: article %>
+    <%= render "articles/clap_button", article: article %>
 
     <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
     <article class="prose prose-lg lg:prose-xl max-w-none prose-headings:font-semibold prose-p:text-gray-800 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-strong:text-gray-900 prose-code:text-pink-600">

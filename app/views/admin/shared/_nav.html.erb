@@ -3,13 +3,13 @@
     <div class="flex h-16 items-center justify-between">
       <div class="flex items-center">
         <div class="flex-shrink-0">
-          <%= link_to "Admin Panel", admin_root_path, class: "font-bold text-lg text-indigo-600" %>
+          <%= link_to t('admin_nav.brand'), admin_root_path, class: "font-bold text-lg text-indigo-600" %>
         </div>
         <div class="hidden md:block">
           <div class="ml-10 flex items-baseline space-x-4">
-            <%= link_to "Dashboard", admin_root_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
-            <%= link_to "User Management", admin_users_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
-            <%= link_to "Moderation", admin_moderation_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
+            <%= link_to t('admin_nav.dashboard'), admin_root_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
+            <%= link_to t('admin_nav.user_management'), admin_users_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
+            <%= link_to t('admin_nav.moderation'), admin_moderation_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
             <%#= link_to "Article Moderation", admin_articles_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
             <%#= link_to "Comment Moderation", admin_comments_path, class: "text-gray-700 hover:text-indigo-600 rounded-md px-3 py-2 text-sm font-medium" %>
           </div>
@@ -17,7 +17,13 @@
       </div>
       <div class="hidden md:block">
         <div class="ml-4 flex items-center md:ml-6">
-          <%= link_to "View Public Site", root_path, target: "_blank", class: "text-gray-700 hover:text-indigo-600 text-sm font-medium" %>
+          <%= link_to t('admin_nav.view_public_site'), root_path, target: "_blank", class: "text-gray-700 hover:text-indigo-600 text-sm font-medium" %>
+
+          <div class="flex items-center ml-4 border-l border-gray-200 pl-4">
+            <%= link_to "English", url_for(locale: 'en'), class: "text-sm #{I18n.locale == :en ? 'font-bold text-indigo-600' : 'font-medium text-gray-500 hover:text-indigo-600'}" %>
+            <span class="mx-2 text-gray-300">|</span>
+            <%= link_to "বাংলা", url_for(locale: 'bn'), class: "text-sm #{I18n.locale == :bn ? 'font-bold text-indigo-600' : 'font-medium text-gray-500 hover:text-indigo-600'}" %>
+          </div>
         </div>
       </div>
     </div>

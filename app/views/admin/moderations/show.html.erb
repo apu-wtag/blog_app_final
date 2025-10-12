@@ -1,16 +1,16 @@
 <div class="p-4 sm:p-6 lg:p-8">
   <div class="sm:flex sm:items-center mb-6">
     <div class="sm:flex-auto">
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900">Content Moderation</h1>
-      <p class="mt-2 text-sm text-gray-700">Review content with pending reports or restoration requests.</p>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900"><%= t('admin_moderation_show.title') %></h1>
+      <p class="mt-2 text-sm text-gray-700"><%= t('admin_moderation_show.subtitle') %></p>
     </div>
   </div>
 
   <%= turbo_frame_tag "moderation-results" do %>
     <div class="border-b border-gray-200 mb-8">
       <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-        <%= link_to "Reported Articles", admin_moderation_path(scope: 'articles'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'articles'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'articles'}" %>
-        <%= link_to "Reported Comments", admin_moderation_path(scope: 'comments'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'comments'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'comments'}" %>
+        <%= link_to t('admin_moderation_show.articles_tab'), admin_moderation_path(scope: 'articles'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'articles'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'articles'}" %>
+        <%= link_to t('admin_moderation_show.comments_tab'), admin_moderation_path(scope: 'comments'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'comments'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'comments'}" %>
       </nav>
     </div>
 

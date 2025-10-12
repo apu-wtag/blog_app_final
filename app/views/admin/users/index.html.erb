@@ -1,21 +1,22 @@
 <div class="p-4 sm:p-6 lg:p-8">
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900">User Management</h1>
-      <p class="mt-2 text-sm text-gray-700">A list of all the users in the system.</p>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900"><%= t('admin_nav.user_management') %></h1>
+      <p class="mt-2 text-sm text-gray-700"><%= t('admin_users_index.subtitle') %></p>
     </div>
   </div>
 
   <%= turbo_frame_tag "users_list" do %>
     <div class="mt-6">
       <%= form_with(url: admin_users_path, method: :get, class: "w-full max-w-md", data: { controller: "autosubmit" }) do |form| %>
+        <%= form.hidden_field :locale, value: I18n.locale %>
         <div class="relative">
           <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
             </svg>
           </div>
-          <%= form.text_field :query, value: params[:query], placeholder: "Search by name or email...",
+          <%= form.text_field :query, value: params[:query], placeholder: t('admin_users_index.search_placeholder'),
                               class: "block w-full rounded-md border-gray-300 py-2 pl-10 pr-3 leading-5 text-gray-900 placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                               data: { autosubmit_target: "query" } %>
         </div>
@@ -29,11 +30,11 @@
             <table class="min-w-full divide-y divide-gray-300">
               <thead class="bg-gray-50">
               <tr>
-                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">User</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Stats</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"><%= t('admin_users_index.headers.user') %></th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"><%= t('admin_users_index.headers.stats') %></th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"><%= t('admin_users_index.headers.role') %></th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span class="sr-only">Actions</span>
+                  <span class="sr-only"><%= t('admin_users_index.headers.actions') %></span>
                 </th>
               </tr>
               </thead>
@@ -58,8 +59,8 @@
                     </div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <div class="text-gray-900">Articles: <%= user.articles.count %></div>
-                    <div class="text-gray-500">Comments: <%= user.comments.count %></div>
+                    <div class="text-gray-900"><%= t('admin_users_index.stats.articles') %><%= user.articles.count %></div>
+                    <div class="text-gray-500"><%= t('admin_users_index.stats.comments') %><%= user.comments.count %></div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <% if user == current_user %>
@@ -79,14 +80,14 @@
 
                   <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                     <% if user.discarded? %>
-                      <%= button_to "Restore", restore_admin_user_path(user), method: :patch,
+                      <%= button_to t('admin_users_index.actions.restore'), restore_admin_user_path(user), method: :patch,
                                     class: "text-green-600 hover:text-green-900",
-                                    data: { turbo_confirm: "Are you sure you want to restore #{user.name}?" } %>
+                                    data: { turbo_confirm: t('admin_users_index.confirmations.restore', name: user.name) } %>
                     <% else %>
-                      <%= link_to "Show", user_path(user), class: "text-indigo-600 hover:text-indigo-900", data: { turbo_frame: "_top" } %>
+                      <%= link_to t('admin_users_index.actions.show'), user_path(user), class: "text-indigo-600 hover:text-indigo-900", data: { turbo_frame: "_top" } %>
                       <% unless user == current_user %>
                         <span class="mx-2 text-gray-300">|</span>
-                        <%= link_to "Delete", admin_user_path(user), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete #{user.name}?" }, class: "text-red-600 hover:text-red-900" %>
+                        <%= link_to t('admin_users_index.actions.delete'), admin_user_path(user), data: { turbo_method: :delete, turbo_confirm: t('admin_users_index.confirmations.delete', name: user.name) }, class: "text-red-600 hover:text-red-900" %>
                       <% end %>
                     <% end %>
 
@@ -100,5 +101,5 @@
       </div>
     </div>
     <%= render 'shared/pagy_nav', pagy_instance: @pagy %>
-<% end %>
+  <% end %>
 </div>

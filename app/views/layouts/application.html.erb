@@ -1,96 +1,99 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= content_for(:title) || "Blog App Final" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title><%= content_for(:title) || "Blog App Final" %></title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= yield :head %>
+  <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+  <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+  <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script> <!-- HTML -->
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-cpp.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-java.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-ruby.min.js"></script>
-    <!--    <script src="https://cdn.jsdelivr.net/gh/paraswaykole/editor-js-code@latest/dist/bundle.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/gh/apu-wtag/editorjs-custom-code@master/dist/bundle.js"></script>
-  </head>
+  <%# Includes all stylesheet files in app/assets/stylesheets %>
+  <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script> <!-- HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-cpp.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-ruby.min.js"></script>
+  <!--    <script src="https://cdn.jsdelivr.net/gh/paraswaykole/editor-js-code@latest/dist/bundle.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/gh/apu-wtag/editorjs-custom-code@master/dist/bundle.js"></script>
+</head>
 
-  <body >
-  <nav class="bg-gray-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <a href="/" class="font-bold text-lg text-indigo-600">Blog app final</a>
-        </div>
-        <div class="flex items-center gap-x-4">
-          <% if current_user.present? %>
+<body >
+<nav class="bg-gray-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <div class="flex items-center">
+        <%= link_to t('navbar.brand'), root_path, class: "font-bold text-lg text-indigo-600" %>
+      </div>
+      <div class="flex items-center gap-x-4">
+        <% if current_user.present? %>
 
-            <%# 1. User Profile Link %>
-            <%= link_to user_path(current_user), class: "flex items-center space-x-3 group" do %>
-              <% if current_user.profile_picture.attached? %>
-                <%= image_tag current_user.profile_picture, class: "h-8 w-8 rounded-full object-cover ring-2 ring-transparent group-hover:ring-indigo-600 transition-all" %>
-              <% else %>
-                <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold ring-2 ring-transparent group-hover:ring-indigo-600 transition-all">
-                  <%= current_user.name.to_s.chr.upcase %>
-                </div>
-              <% end %>
-              <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">
-                <%= current_user.name %>
-              </span>
+          <%= link_to user_path(current_user), class: "flex items-center space-x-3 group" do %>
+            <% if current_user.profile_picture.attached? %>
+              <%= image_tag current_user.profile_picture, class: "h-8 w-8 rounded-full object-cover ring-2 ring-transparent group-hover:ring-indigo-600 transition-all" %>
+            <% else %>
+              <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold ring-2 ring-transparent group-hover:ring-indigo-600 transition-all">
+                <%= current_user.name.to_s.chr.upcase %>
+              </div>
             <% end %>
-            <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
-
-            <% if current_user.admin? %>
-              <%= link_to "Admin", admin_root_path, class: "text-sm font-medium text-red-700 hover:text-indigo-600" %>
-              <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
-            <% end %>
-
-            <%= button_to "Logout", logout_path, method: :delete, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
-
-          <% else %>
-            <%# Logged-out links %>
-            <%= link_to "Sign Up", sign_up_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
-            <%= link_to "Login", login_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+            <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">
+              <%= current_user.name %>
+            </span>
           <% end %>
+          <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+
+          <% if current_user.admin? %>
+            <%= link_to t('navbar.admin'), admin_root_path, class: "text-sm font-medium text-red-700 hover:text-indigo-600" %>
+            <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+          <% end %>
+
+          <%= button_to t('navbar.logout'), logout_path, method: :delete, params: { locale: I18n.locale }, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+        <% else %>
+          <%= link_to t('navbar.sign_up'), sign_up_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+          <%= link_to t('navbar.login'), login_path, class: "text-sm font-medium text-gray-700 hover:text-indigo-600" %>
+        <% end %>
+
+        <div class="flex items-center ml-4 border-l border-gray-200 pl-4">
+          <%= link_to "English", url_for(locale: 'en'), class: "text-sm #{I18n.locale == :en ? 'font-bold text-indigo-600' : 'font-medium text-gray-500 hover:text-indigo-600'}" %>
+          <span class="mx-2 text-gray-300">|</span>
+          <%= link_to "বাংলা", url_for(locale: 'bn'), class: "text-sm #{I18n.locale == :bn ? 'font-bold text-indigo-600' : 'font-medium text-gray-500 hover:text-indigo-600'}" %>
         </div>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <main class="max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
-    <%= render "shared/flash" %>
-    <%= yield %>
-  </main>
-  </body>
-  <script>
-      function highlightCode() {
-          Prism.highlightAll();
-      }
+<main class="max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
+  <%= render "shared/flash" %>
+  <%= yield %>
+</main>
+</body>
+<script>
+    function highlightCode() {
+        Prism.highlightAll();
+    }
 
-      // Run on initial page load
-      document.addEventListener('DOMContentLoaded', highlightCode);
+    // Run on initial page load
+    document.addEventListener('DOMContentLoaded', highlightCode);
 
-      // Run on Turbo page loads
-      document.addEventListener('turbo:load', highlightCode);
-  </script>
+    // Run on Turbo page loads
+    document.addEventListener('turbo:load', highlightCode);
+</script>
 </html>

@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl mx-auto my-12 px-4">
   <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">
-    Articles in: <%= @topic.slug %>
+    <%= t('topics_show.title', topic_slug: @topic.slug) %>
   </h1>
 
   <div id="articles" class="min-w-full space-y-10">
@@ -8,7 +8,7 @@
       <%# Use the same partial as the index page to get the same look! %>
       <%= render partial: 'articles/article_card', collection: @articles, as: :article %>
     <% else %>
-      <p class="text-center my-10">No articles found in this topic.</p>
+      <p class="text-center my-10"><%= t('topics_show.no_articles_message') %></p>
     <% end %>
   </div>
   <%= render 'shared/pagy_nav', pagy_instance: @pagy %>

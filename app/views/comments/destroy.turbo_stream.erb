@@ -1,14 +1,13 @@
 <%= turbo_stream.remove @comment %>
 <%= turbo_stream.update "comment-count-#{@article.id}" do %>
-  Comments (<%= @article.comments.kept.count %>)
+  <%= t('comments.comments_title', count: @article.comments.kept.count) %>
 <% end %>
 <% if @comment.parent_id? %>
   <%#= turbo_stream.update "reply-count-#{@comment.parent_id}" do %>
-<!--    View <%#= pluralize(@comment.parent.replies.count, 'reply') %>-->
-  <%# end %>
+<%# end %>
   <%= turbo_stream.update "reply-count-#{@comment.parent_id}" do %>
     <% if @comment.parent.replies.kept.any? %>
-      View <%= pluralize(@comment.parent.replies.kept.count, 'reply') %>
+      <%= t('comment_partial.view_replies', count: @comment.parent.replies.kept.count) %>
     <% else %>
       <span class="hidden"></span>
     <% end %>

@@ -43,6 +43,8 @@ module BlogAppFinal
     config.action_mailer.raise_delivery_errors = false
     config.action_mailer.delivery_method = :letter_opener
     config.action_mailer.perform_deliveries = true
+    config.i18n.available_locales = [:en,:bn]
+    config.i18n.default_locale = :en
     config
   end
 end

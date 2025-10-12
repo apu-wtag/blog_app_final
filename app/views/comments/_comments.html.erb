@@ -1,10 +1,9 @@
 <%= turbo_frame_tag "comments_section" do %>
   <div class="space-y-6">
     <h2 id="comment-count-<%= article.id %>" class="text-xl font-bold text-gray-900 border-b pb-3">
-      Comments (<%= article.comments.kept.count %>)
+      <%= t('comments.comments_title', count: article.comments.kept.count) %>
     </h2>
 
-    <!-- New Comment Form -->
     <% if policy(Comment.new).create? %>
       <div id="new_comment" class="border-b pb-6">
         <%= render 'comments/form', article: article, comment: Comment.new %>
@@ -13,15 +12,16 @@
       <div class="border-b pb-6">
         <div class="bg-gray-50 text-center p-4 rounded-lg">
           <p class="text-gray-700">
-            Please <%= link_to "Log in", login_path, class: "font-semibold text-indigo-600 hover:underline", data: { turbo_frame: "_top" }  %>
-            or <%= link_to "Sign up", sign_up_path, class: "font-semibold text-indigo-600 hover:underline", data: { turbo_frame: "_top" }  %>
-            to leave a comment.
+            <%
+              login_link = link_to(t('navbar.login'), login_path, class: "font-semibold text-indigo-600 hover:underline", data: { turbo_frame: "_top" })
+              signup_link = link_to(t('navbar.sign_up'), sign_up_path, class: "font-semibold text-indigo-600 hover:underline", data: { turbo_frame: "_top" })
+            %>
+            <%= t('comments.log_in_prompt_html', login_link: login_link, signup_link: signup_link).html_safe %>
           </p>
         </div>
       </div>
     <% end %>
 
-    <!-- Comment List -->
     <div id="comments" class="space-y-6">
       <% @comments.each do |comment| %>
         <%= render 'comments/comment', comment: comment %>

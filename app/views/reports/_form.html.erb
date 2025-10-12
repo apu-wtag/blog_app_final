@@ -1,18 +1,19 @@
 <%= turbo_frame_tag "report_form_#{@reportable.class.name}_#{@reportable.id}" do %>
   <% model_path = @reportable.is_a?(Article) ? [@reportable, @report] : [@reportable.article, @reportable, @report] %>
   <%= form_with(model: model_path, class: "mt-2 p-4 border rounded-md bg-gray-50", data: { turbo_frame: "_top" }) do |form| %>
+    <%= hidden_field_tag :locale, I18n.locale %>
     <% if form.object.errors.any? %>
       <div class="text-red-600 text-sm mb-2">
         <%= form.object.errors.full_messages.to_sentence %>
       </div>
     <% end %>
     <div>
-      <%= form.label :reason, "Please provide a reason for your report:", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :reason, t('reports_form.reason_label'), class: "block text-sm font-medium text-gray-700" %>
       <%= form.text_area :reason, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
     </div>
     <div class="mt-2 flex items-center gap-4">
-      <%= form.submit "Submit Report", class: "cursor-pointer rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500" %>
-      <a href="#" onclick="this.closest('turbo-frame').innerHTML = ''; return false;" class="text-sm text-gray-600">Cancel</a>
+      <%= form.submit t('reports_form.submit_button'), class: "cursor-pointer rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500" %>
+      <a href="#" onclick="this.closest('turbo-frame').innerHTML = ''; return false;" class="text-sm text-gray-600"><%= t('reports_form.cancel_link') %></a>
     </div>
   <% end %>
 <% end %>

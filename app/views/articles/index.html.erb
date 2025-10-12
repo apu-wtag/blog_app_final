@@ -1,19 +1,19 @@
-<% content_for :title, "Explore Articles & People" %>
+<% content_for :title, t('articles_index.page_title') %>
 
 <div class="w-full">
   <%= turbo_frame_tag "search-results" do %>
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
       <div>
-        <h1 class="font-bold text-4xl">Explore</h1>
-        <p class="text-gray-500 mt-1">Discover articles and authors.</p>
+        <h1 class="font-bold text-4xl"><%= t('articles_index.main_title') %></h1>
+        <p class="text-gray-500 mt-1"><%= t('articles_index.subtitle') %></p>
       </div>
 
       <div class="flex items-center gap-4 w-full sm:w-auto">
         <div class="relative w-full sm:w-72" data-controller="autosubmit">
           <%= form_with url: articles_path, method: :get, class: "w-full" do |form| %>
             <%= text_field_tag :query, @query,
-                               placeholder: "Search articles and people...",
+                               placeholder: t('articles_index.search_placeholder'),
                                class: "w-full rounded-md border-gray-300 py-2 pl-4 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
                                data: { autosubmit_target: "query" } %>
             <%= hidden_field_tag :scope, @scope %>
@@ -23,7 +23,7 @@
           <% end %>
         </div>
         <% if policy(Article).create? %>
-          <%= link_to "New article", new_article_path,
+          <%= link_to t('articles_index.new_article_button'), new_article_path,
                       class: "hidden sm:block rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium whitespace-nowrap", data: { turbo_frame: "_top" } %>
         <% end %>
       </div>
@@ -31,8 +31,8 @@
 
     <div class="border-b border-gray-200 mb-8">
       <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-        <%= link_to "Articles", articles_path(query: @query, scope: 'articles'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'articles'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'articles'}" %>
-        <%= link_to "People", articles_path(query: @query, scope: 'people'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'people'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'people'}" %>
+        <%= link_to t('articles_index.articles_tab'), articles_path(query: @query, scope: 'articles'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'articles'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'articles'}" %>
+        <%= link_to t('articles_index.people_tab'), articles_path(query: @query, scope: 'people'), class: "whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium #{'border-indigo-500 text-indigo-600' if @scope == 'people'} #{'border-transparent text-gray-500 hover:border-gray-300' unless @scope == 'people'}" %>
       </nav>
     </div>
 
@@ -48,9 +48,9 @@
           </div>
         <% end %>
       <% else %>
-        <p class="text-center my-10 text-gray-500">No results found for "<%= @query %>".</p>
+        <p class="text-center my-10 text-gray-500"><%= t('articles_index.no_results_html', query: @query).html_safe %></p>
       <% end %>
     </div>
     <%= render 'shared/pagy_nav', pagy_instance: @pagy %>
-<% end %>
+  <% end %>
 </div>

@@ -4,13 +4,21 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   include Pundit::Authorization
   include Pagy::Backend
+  before_action :set_locale
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def not_found
     render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
   end
+  def default_url_options
+    { locale: I18n.locale }
+  end
   private
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
+  end
+
   def current_user
     # return @current_user if defined?(@current_user)
 

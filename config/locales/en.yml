@@ -1,31 +1,223 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  navbar:
+    brand: "Blog app final"
+    admin: "Admin"
+    logout: "Logout"
+    sign_up: "Sign Up"
+    login: "Login"
+  sessions_new:
+    title: "Log In"
+    email_or_username_label: "Email or Username"
+    password_label: "Password"
+    remember_me_label: "Remember me"
+    forgot_password_link: "Forgot your password?"
+    submit_button: "Log In"
+  users_new:
+    title: "Create Account"
+    username_label: "Username"
+    username_hint: "(must be unique)"
+    name_label: "Name"
+    email_label: "Email"
+    bio_label: "Bio"
+    profile_picture_label: "Profile Picture"
+    password_label: "Password"
+    password_confirmation_label: "Password Confirmation"
+    submit_button: "Sign Up"
+  users_show:
+    edit_profile_button: "Edit Profile"
+    published_articles_title: "Published Articles"
+    no_articles_message: "This user hasn’t published any articles yet."
+    hidden_articles_title: "Hidden Articles"
+    status_pending_review: "Pending Review"
+    status_rejected: "Rejected"
+    hidden_on_date: "Hidden on %{date}"
+    admin_reason: "Admin Reason: %{reason}"
+    edit_for_review_button: "Edit to Request Review"
+  users_edit:
+    title: "Edit Profile"
+    username_label: "Username"
+    username_hint: "(must be unique)"
+    name_label: "Name"
+    email_label: "Email"
+    bio_label: "Bio"
+    profile_picture_label: "Profile Picture"
+    submit_button: "Update Profile"
+  articles_index:
+    page_title: "Explore Articles & People"
+    main_title: "Explore"
+    subtitle: "Discover articles and authors."
+    search_placeholder: "Search articles and people..."
+    new_article_button: "New article"
+    articles_tab: "Articles"
+    people_tab: "People"
+    no_results_html: "No results found for \"<strong>%{query}</strong>\"."
+  article_card:
+    time_ago: "%{time} ago"
+    show_button: "Show"
+    edit_button: "Edit"
+    destroy_button: "Destroy"
+    destroy_confirm: "Are you sure?"
+  articles_show:
+    edit_article_link: "Edit article"
+    back_to_articles_link: "Back to articles"
+    destroy_button: "Destroy"
+    report_article_link: "Report this article"
+  common:
+    confirm: "Are you sure?"
+  article_partial:
+    hidden_notice_title: "This article is currently hidden."
+    hidden_notice_body: "After saving your changes, this article will be submitted to an administrator for review before it can be restored."
+    topic_label: "Topic name :"
+  clap_button:
+    claps_count:
+      one: "%{count} Clap"
+      other: "%{count} Claps"
+  articles_form:
+    errors:
+      header:
+        one: "1 error prohibited this article from being saved:"
+        other: "%{count} errors prohibited this article from being saved:"
+    title_placeholder: "Title"
+    topic_placeholder: "Type to search or create a new topic..."
+    admin_note_title: "Note to Admin (Optional)"
+    admin_note_body: "Explain the changes you've made to help the admin review your article."
+    admin_note_placeholder: "e.g., I've removed the problematic section and clarified my sources."
+    submit_button_update: "Update & Request Review"
+    submit_button_publish: "Publish"
+    show_article_link: "Show this article"
+  articles_edit:
+    page_title: "Editing article"
+  articles_new:
+    page_title: "New article"
+  comments:
+    comments_title:
+      zero: "No Comments"
+      one: "1 Comment"
+      other: "%{count} Comments"
+    log_in_prompt_html: "Please %{login_link} or %{signup_link} to leave a comment."
+  comments_form:
+    placeholder_edit: "Edit your comment..."
+    placeholder_new: "Write a response..."
+    submit_button_update: "Update"
+    submit_button_new: "Respond"
+  comment_partial:
+    reply_button: "Reply"
+    edit_link: "Edit"
+    delete_button: "Delete"
+    report_link: "Report"
+    view_replies:
+      one: "View 1 reply"
+      other: "View %{count} replies"
+  password_resets_new:
+    title: "Forgot Password?"
+    email_label: "Email"
+    submit_button: "Send Reset Email"
+  password_resets_edit:
+    title: "Reset Your Password"
+    password_label: "Password"
+    password_confirmation_label: "Password Confirmation"
+    submit_button: "Update Password"
+  reports_form:
+    reason_label: "Please provide a reason for your report:"
+    submit_button: "Submit Report"
+    cancel_link: "Cancel"
+  reports_success:
+    message: "Thank you! Your report has been submitted for review."
+  topics_show:
+    title: "Articles in: %{topic_slug}"
+    no_articles_message: "No articles found in this topic."
+  admin_dashboard:
+    title: "Admin Dashboard"
+    stats:
+      total_users: "Total Users"
+      total_articles: "Total Articles"
+      total_comments: "Total Comments"
+      total_claps: "Total Claps"
+    charts:
+      users_per_week: "New Users per Week"
+      articles_per_week: "Articles Posted per Week"
+      date_axis: "Date"
+      new_users_axis: "New Users"
+      new_articles_axis: "New Articles"
+    moderation_queue:
+      title: "Quick Moderation Queue"
+      view_all: "View All"
+      article_prefix: "Article: "
+      comment_on_prefix: "Comment on: "
+      author_note_prefix: "Author's Note: "
+      requested_by_prefix: "Requested by "
+      reported_by_prefix: "Reported by "
+      status_awaiting_review: "Awaiting Review"
+      status_reported: "Reported"
+      empty_message: "The moderation queue is empty. Well done!"
+    spotlight:
+      title: "Spotlight Articles"
+      most_clapped: "Most Clapped"
+      most_commented: "Most Commented"
+      claps_count:
+        one: "%{count} clap"
+        other: "%{count} claps"
+      comments_count:
+        one: "%{count} comment"
+        other: "%{count} comments"
+  admin_moderation_show:
+    title: "Content Moderation"
+    subtitle: "Review content with pending reports or restoration requests."
+    articles_tab: "Reported Articles"
+    comments_tab: "Reported Comments"
+  admin_articles_table:
+    header_article_details: "Reported Article & Details"
+    header_actions: "Actions"
+    by_author: "By %{name}"
+    authors_note_prefix: "Author's Note: "
+    reported_for_prefix: "Reported for: \"%{reason}\" - by %{user}"
+    action_show: "Show"
+    action_reject: "Reject"
+    action_approve: "Approve"
+    action_actions: "Actions"
+    action_resolve_reports: "Resolve Reports"
+    action_dismiss_reports: "Dismiss Reports"
+    action_hide: "Hide"
+  admin_comments_table:
+    header_comment_details: "Reported Comment & Details"
+    header_actions: "Actions"
+    by_user_prefix: "By "
+    on_article_prefix: " on article: "
+    action_show: "Show"
+    action_actions: "Actions"
+    action_mark_resolved: "Mark as Resolved"
+    action_mark_dismissed: "Mark as Dismissed"
+    action_delete: "Delete"
+  admin_hide_article_row:
+    title: "Hide Article: %{title}"
+    reason_label: "Reason for hiding (optional, will be shown to the author):"
+    cancel_button: "Cancel"
+    submit_button: "Confirm Hide"
+  admin_reject_form_row:
+    title: "Reject Restoration: %{title}"
+    reason_label: "Reason for rejection (optional, will be shown to the author):"
+    submit_button: "Confirm Rejection"
+  admin_nav:
+    brand: "Admin Panel"
+    dashboard: "Dashboard"
+    user_management: "User Management"
+    moderation: "Moderation"
+    view_public_site: "View Public Site"
+  admin_users_index:
+    subtitle: "A list of all the users in the system."
+    search_placeholder: "Search by name or email..."
+    headers:
+      user: "User"
+      stats: "Stats"
+      role: "Role"
+      actions: "Actions"
+    stats:
+      articles: "Articles: "
+      comments: "Comments: "
+    actions:
+      restore: "Restore"
+      show: "Show"
+      delete: "Delete"
+    confirmations:
+      restore: "Are you sure you want to restore %{name}?"
+      delete: "Are you sure you want to delete %{name}?"

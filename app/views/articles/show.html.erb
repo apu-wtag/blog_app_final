@@ -1,29 +1,27 @@
 <% content_for :title, @article.title %>
 
 <div class="w-full max-w-3xl mx-auto my-12 px-4 ">
-<!--  Links to Editing, Back and Destroy-->
   <div class="flex items-center space-x-4 mb-6">
     <% if policy(@article).update? %>
-      <%= link_to "Edit article", edit_article_path(@article),
+      <%= link_to t('articles_show.edit_article_link'), edit_article_path(@article),
                   class: "text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" %>
     <% end %>
-    <%= link_to "Back to articles", articles_path,
+    <%= link_to t('articles_show.back_to_articles_link'), articles_path,
                 class: "text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" %>
     <% if policy(@article).destroy? %>
       <span class="text-gray-300">|</span>
 
-      <%= button_to "Destroy", @article,
+      <%= button_to t('articles_show.destroy_button'), @article,
                     method: :delete,
                     class: "text-sm font-medium text-red-600 hover:text-red-800 transition-colors",
-                    data: { turbo_confirm: "Are you sure?" } %>
+                    data: { turbo_confirm: t('common.confirm') } %>
     <% end %>
     <% if policy(Report.new(reportable: @article)).create? %>
       <span class="text-gray-300">|</span>
-      <%= link_to "Report this article", new_article_report_path(@article),
+      <%= link_to t('articles_show.report_article_link'), new_article_report_path(@article),
                   class: "text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" %>
     <% end %>
   </div>
-<!--  Rendering Article-->
   <%= render @article %>
   <hr class="my-8">
   <%= render 'comments/comments', article: @article %>

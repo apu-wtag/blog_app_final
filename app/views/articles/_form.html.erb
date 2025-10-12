@@ -3,10 +3,11 @@
   data_attributes[:"editor-article-id-value"] = article.id if article.persisted?
 %>
 <%= form_with(model: article, class: "max-w-3xl mx-auto px-4 space-y-12", data: data_attributes ) do |form| %>
+  <%= hidden_field_tag :locale, I18n.locale %>
   <% if article.errors.any? %>
     <div class="rounded-md bg-red-50 p-5 text-sm text-red-700 shadow-sm">
       <h2 class="font-semibold">
-        <%= pluralize(article.errors.count, "error") %> prohibited this article from being saved:
+        <%= t('articles_form.errors.header', count: article.errors.count) %>
       </h2>
       <ul class="mt-2 list-disc pl-5 space-y-1">
         <% article.errors.full_messages.each do |message| %>
@@ -15,29 +16,26 @@
       </ul>
     </div>
   <% end %>
-<!--  Article Hidden details-->
   <% if article.discarded? %>
     <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
-      <h3 class="font-semibold text-yellow-800">This article is currently hidden.</h3>
+      <h3 class="font-semibold text-yellow-800"><%= t('article_partial.hidden_notice_title') %></h3>
       <p class="text-sm text-yellow-700 mt-1">
-        After saving your changes, this article will be submitted to an administrator for review before it can be restored.
+        <%= t('article_partial.hidden_notice_body') %>
       </p>
     </div>
   <% end %>
 
-  <!-- Title -->
   <div class="pb-6 border-b border-gray-200">
     <%= form.text_field :title,
-                        placeholder: "Title",
+                        placeholder: t('articles_form.title_placeholder'),
                         class: "w-full text-5xl sm:text-6xl font-bold text-gray-900 placeholder-gray-400 border-0 focus:ring-0 focus:outline-none",
                         autofocus: true,
                         id: "article_title" %>
   </div>
 
-  <!-- Topic -->
   <div class="pb-6 border-b border-gray-200 relative" data-controller="autocomplete">
     <%= form.text_field :topic_name,
-                        placeholder: "Type to search or create a new topic...",
+                        placeholder: t('articles_form.topic_placeholder'),
                         autocomplete: "off",
                         id: "article_topic_name",
                         class: "w-full text-lg font-medium text-gray-700 placeholder-gray-400 border-0 focus:ring-0 focus:outline-none",
@@ -46,7 +44,6 @@
                           action: "input->autocomplete#filter"
                         } %>
 
-    <!-- Autocomplete results -->
     <div class="hidden absolute z-10 mt-2 w-full max-h-60 overflow-y-auto rounded-lg bg-white shadow-lg ring-1 ring-black/5"
          data-autocomplete-target="results"
          data-action="click->autocomplete#preventHide">
@@ -60,7 +57,6 @@
     </div>
   </div>
 
-  <!-- Content -->
   <div class="pb-6 border-b border-gray-200">
     <%= form.hidden_field :content, id: "article_content_hidden" %>
     <div id="article_content"
@@ -68,25 +64,23 @@
          class="prose lg:prose-xl max-w-none min-h-[400px] text-gray-800 focus:outline-none">
     </div>
   </div>
-<!--  Note to admin from author -->
   <% if article.discarded? %>
     <div class="pb-6 border-b border-gray-200">
-      <h3 class="text-lg font-medium text-gray-800 mb-2">Note to Admin (Optional)</h3>
-      <p class="text-sm text-gray-500 mb-4">Explain the changes you've made to help the admin review your article.</p>
-      <%= form.text_area :author_note, rows: 3, class: "block w-full rounded-md border-gray-300 shadow-sm", placeholder: "e.g., I've removed the problematic section and clarified my sources." %>
+      <h3 class="text-lg font-medium text-gray-800 mb-2"><%= t('articles_form.admin_note_title') %></h3>
+      <p class="text-sm text-gray-500 mb-4"><%= t('articles_form.admin_note_body') %></p>
+      <%= form.text_area :author_note, rows: 3, class: "block w-full rounded-md border-gray-300 shadow-sm", placeholder: t('articles_form.admin_note_placeholder') %>
     </div>
   <% end %>
 
-  <!-- Actions -->
   <div class="flex items-center gap-4 pt-4">
-    <% submit_text = article.discarded? ? "Update & Request Review" : "Publish" %>
+    <% submit_text = article.discarded? ? t('articles_form.submit_button_update') : t('articles_form.submit_button_publish') %>
     <%= form.submit submit_text,
                     class: "px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition" %>
 
     <% if article.persisted? %>
-      <%= link_to "Show this article", article, class: "px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 transition" %>
+      <%= link_to t('articles_form.show_article_link'), article, class: "px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 transition" %>
     <% end %>
 
-    <%= link_to "Back to articles", articles_path, class: "px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 transition" %>
+    <%= link_to t('articles_show.back_to_articles_link'), articles_path, class: "px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 transition" %>
   </div>
 <% end %>

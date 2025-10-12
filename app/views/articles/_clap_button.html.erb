@@ -9,7 +9,7 @@
         👏
       </span>
       <span class="text-sm font-medium group-hover">
-        <%= article.claps_count %> Claps
+        <%= t('clap_button.claps_count', count: article.claps_count) %>
       </span>
     <% end %>
   <% else %>

@@ -1,4 +1,3 @@
-<!-- This partial displays a single article as a summary card.-->
 <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm group transition hover:shadow-md">
 
   <div class="flex justify-between items-center mb-4">
@@ -12,18 +11,18 @@
       <% end %>
       <p class="text-sm text-gray-700 font-medium"><%= article.user.name %></p>
       <span class="text-gray-400 text-xs">•</span>
-      <p class="text-xs text-gray-500"><%= time_ago_in_words(article.created_at) %> ago</p>
+      <p class="text-xs text-gray-500"><%= t('article_card.time_ago', time: time_ago_in_words(article.created_at)) %></p>
     </div>
 
     <div class="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <%= link_to "Show", article, class: "rounded-md px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 font-medium", data: { turbo_frame: "_top" } %>
+      <%= link_to t('article_card.show_button'), article, class: "rounded-md px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 font-medium", data: { turbo_frame: "_top" } %>
       <% if policy(article).update? %>
-        <%= link_to "Edit", edit_article_path(article), class: "rounded-md px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 font-medium", data: { turbo_frame: "_top" } %>
+        <%= link_to t('article_card.edit_button'), edit_article_path(article), class: "rounded-md px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 font-medium", data: { turbo_frame: "_top" } %>
       <% end %>
       <% if policy(article).destroy?  %>
-        <%= button_to "Destroy", article, method: :delete,
+        <%= button_to t('article_card.destroy_button'), article, method: :delete,
                       class: "rounded-md px-3 py-1.5 text-xs text-white bg-red-600 hover:bg-red-500 font-medium",
-                      data: { turbo_confirm: "Are you sure?" } %>
+                      data: { turbo_confirm: t('article_card.destroy_confirm') } %>
       <% end %>
     </div>
   </div>

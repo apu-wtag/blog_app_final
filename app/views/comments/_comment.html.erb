@@ -22,24 +22,24 @@
 
       <div class="mt-3 ml-12 text-xs text-gray-500 flex items-center space-x-4">
         <% if policy(comment).create? %>
-          <button data-action="click->comments#toggle" class="hover:text-gray-800">Reply</button>
+          <button data-action="click->comments#toggle" class="hover:text-gray-800"><%= t('comment_partial.reply_button') %></button>
         <% end %>
 
         <% if policy(comment).update? %>
-          <%= link_to "Edit", edit_article_comment_path(comment.article, comment),
+          <%= link_to t('comment_partial.edit_link'), edit_article_comment_path(comment.article, comment),
                       data: { turbo_stream: true },
                       class: "hover:text-gray-800" %>
         <% end %>
 
         <% if policy(comment).destroy? %>
-          <%= button_to "Delete", [comment.article, comment],
+          <%= button_to t('comment_partial.delete_button'), [comment.article, comment],
                         method: :delete,
-                        data: { turbo_confirm: "Are you sure?" },
+                        data: { turbo_confirm: t('common.confirm') },
                         class: "text-red-500 hover:text-red-700" %>
         <% end %>
 
         <% if policy(Report.new(reportable: comment)).create? %>
-          <%= link_to "Report", new_article_comment_report_path(comment.article, comment),
+          <%= link_to t('comment_partial.report_link'), new_article_comment_report_path(comment.article, comment),
                       data: { turbo_frame: "report_form_Comment_#{comment.id}" },
                       class: "hover:text-red-600" %>
         <% end %>
@@ -47,7 +47,7 @@
         <button id="reply-count-<%= comment.id %>"
                 data-action="click->comments#toggleReplies"
                 class="font-medium text-indigo-600 hover:underline <%= 'hidden' if comment.replies.kept.empty? %>">
-          <%= comment.replies.kept.count == 1 ? "View 1 reply" : "View #{comment.replies.kept.count} replies" %>
+          <%= t('comment_partial.view_replies', count: comment.replies.kept.count) %>
         </button>
       </div>
 
@@ -69,5 +69,5 @@
         <% end %>
       </div>
     </div>
-<% end %>
+  <% end %>
 </div>
