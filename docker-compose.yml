@@ -1,4 +1,13 @@
 version: '3.8'
+x-app-base: &app-base
+  build: .
+  networks:
+    - app_network
+  volumes:
+    - .:/rails
+    - bundle_cache:/usr/local/bundle
+  tty: true
+  env_file: ./.env
 
 networks:
   app_network:
@@ -11,16 +20,14 @@ services:
       - app_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
+    env_file: ./.env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
-      - "5432:5432"  # Optional: expose for local tools
+      - "5432:5432"
     restart: always
 
   redis:
@@ -35,28 +42,18 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "6379:6379"  # Optional
+      - "6379:6379"
     restart: always
 
   web:
-    build: .
+    <<: *app-base
     command: bash -c "bundle exec rails s -p 3000 -b '0.0.0.0'"
-    networks:
-      - app_network
-    volumes:
-      - .:/rails
-      - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
     environment:
       RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/blog_app_final_development
-      DATABASE_USERNAME: postgres  # Matches POSTGRES_USER if set; with trust, no password needed
-      DATABASE_NAME: blog_app_final  # Adjust if your app name differs
-      RAILS_MAX_THREADS: 5
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      REDIS_URL: redis://redis:6379/1
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}:5432/${POSTGRES_DB_DEV}
+      REDIS_URL: redis://${REDIS_HOST}:6379/1
     depends_on:
       db:
         condition: service_healthy
@@ -64,35 +61,18 @@ services:
         condition: service_healthy
     tty: true
   tailwind:
-    build: .
+    <<: *app-base
     command: bin/rails tailwindcss:watch[poll]
-    networks:
-      - app_network
-    volumes:
-      - .:/rails
-      - bundle_cache:/usr/local/bundle
-    environment:
-      RAILS_ENV: development
     depends_on:
       - web
-    tty: true
 
   sidekiq:
-    build: .
+    <<: *app-base
     command: bundle exec sidekiq
-    networks:
-      - app_network
-    volumes:
-      - .:/rails
-      - bundle_cache:/usr/local/bundle
     environment:
       RAILS_ENV: development
-      DATABASE_USERNAME: postgres
-      DATABASE_NAME: blog_app_final
-      RAILS_MAX_THREADS: 5
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      REDIS_URL: redis://redis:6379/1
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}:5432/${POSTGRES_DB_DEV}
+      REDIS_URL: redis://${REDIS_HOST}:6379/1
     depends_on:
       db:
         condition: service_healthy
