@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
   end
   def default_url_options
-    { locale: I18n.locale }
+    I18n.locale == I18n.default_locale ? {} : { locale: I18n.locale }
   end
   private
   def set_locale

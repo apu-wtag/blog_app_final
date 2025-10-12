@@ -5,14 +5,14 @@ RSpec.describe "User Sign Up", type: :system do
     it "allows a new user to sign up successfully" do
       visit sign_up_path
 
-      fill_in "User name", with: "new_test_user"
+      fill_in "Username", with: "new_test_user"
       fill_in "Name", with: "Test User"
       fill_in "Email", with: "new_user@example.com"
       fill_in "Password", with: "Password123!"
-      fill_in "Password confirmation", with: "Password123!"
+      fill_in "Password Confirmation", with: "Password123!"
       fill_in "Bio", with: "This is a test bio."
 
-      attach_file "Profile picture", Rails.root.join('spec', 'support', 'assets', 'test_avatar.png')
+      attach_file "Profile Picture", Rails.root.join('spec', 'support', 'assets', 'test_avatar.png')
 
       click_button "Sign Up"
 
@@ -30,7 +30,7 @@ RSpec.describe "User Sign Up", type: :system do
       fill_in "Name", with: "Test User"
       fill_in "Email", with: "test@example.com"
       fill_in "Password", with: "Password123!"
-      fill_in "Password confirmation", with: "mismatched"
+      fill_in "Password Confirmation", with: "mismatched"
 
       click_button "Sign Up"
 
@@ -47,7 +47,7 @@ RSpec.describe "User Sign Up", type: :system do
       fill_in "Name", with: "Banned User"
       fill_in "Email", with: "banned@example.com"
       fill_in "Password", with: "Password123!"
-      fill_in "Password confirmation", with: "Password123!"
+      fill_in "Password Confirmation", with: "Password123!"
       click_button "Sign Up"
 
       expect(User.count).to eq(1)
