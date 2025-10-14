@@ -86,7 +86,7 @@ GEM
     brakeman (7.1.0)
       racc
     builder (3.3.0)
-    chartkick (5.2.0)
+    chartkick (5.2.1)
     childprocess (5.1.0)
       logger (~> 1.5)
     chronic (0.10.2)
